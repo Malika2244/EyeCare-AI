@@ -1,0 +1,418 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login | EyeCare AI</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f5f7fc, #e9e9f8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 25px;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 1000px;
+            min-height: 570px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: white;
+            border-radius: 22px;
+            overflow: hidden;
+            box-shadow: 0 15px 50px rgba(23, 33, 61, 0.13);
+        }
+
+        /* LEFT SIDE */
+
+        .welcome-section {
+            background: linear-gradient(145deg, #17213d, #5147b9, #7058c9);
+            color: white;
+            padding: 55px 45px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .logo {
+            font-size: 27px;
+            font-weight: 800;
+            margin-bottom: 55px;
+        }
+
+        .logo span {
+            color: #b8a5ff;
+        }
+
+        .welcome-section h1 {
+            font-size: 34px;
+            line-height: 1.3;
+            margin-bottom: 20px;
+        }
+
+        .welcome-section p {
+            color: #e0dcf8;
+            line-height: 1.8;
+            font-size: 15px;
+        }
+
+        .eye-icon {
+            font-size: 65px;
+            margin-top: 35px;
+        }
+
+        .tagline {
+            margin-top: 25px;
+            font-size: 13px;
+            color: #d0c8fa;
+        }
+
+        /* RIGHT SIDE */
+
+        .form-section {
+            padding: 55px 45px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .form-section h2 {
+            color: #17213d;
+            font-size: 29px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #8290a5;
+            font-size: 14px;
+            margin-bottom: 32px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: #263653;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 9px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 15px;
+            border: 1px solid #dfe2ed;
+            border-radius: 9px;
+            outline: none;
+            font-size: 14px;
+            font-family: inherit;
+            transition: 0.3s;
+            background: #fafaff;
+        }
+
+        input:focus {
+            border-color: #6654c8;
+            box-shadow: 0 0 0 3px rgba(102, 84, 200, 0.12);
+            background: white;
+        }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .password-wrapper input {
+            padding-right: 65px;
+        }
+
+        .show-password {
+            position: absolute;
+            right: 13px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: none;
+            background: transparent;
+            color: #6553c5;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 9px;
+            background: linear-gradient(90deg, #5147b9, #8b6ce4);
+            color: white;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 8px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 18px rgba(81, 71, 185, 0.25);
+        }
+
+        .message {
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 18px;
+        }
+
+        .error {
+            background: #fff0f0;
+            color: #c0392b;
+            border: 1px solid #ffd6d6;
+        }
+
+        .success {
+            background: #e9f9f1;
+            color: #18794e;
+            border: 1px solid #c7efda;
+        }
+
+        .signup-text {
+            text-align: center;
+            margin-top: 25px;
+            color: #8290a5;
+            font-size: 14px;
+        }
+
+        .signup-text a {
+            color: #6553c5;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .signup-text a:hover {
+            text-decoration: underline;
+        }
+
+        .footer-text {
+            text-align: center;
+            margin-top: 35px;
+            color: #a0a8b8;
+            font-size: 11px;
+        }
+
+        /* MOBILE RESPONSIVE */
+
+        @media (max-width: 750px) {
+
+            .login-container {
+                grid-template-columns: 1fr;
+            }
+
+            .welcome-section {
+                padding: 30px;
+            }
+
+            .logo {
+                margin-bottom: 25px;
+            }
+
+            .welcome-section h1 {
+                font-size: 26px;
+            }
+
+            .eye-icon {
+                display: none;
+            }
+
+            .form-section {
+                padding: 35px 25px;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div class="login-container">
+
+        <!-- LEFT WELCOME SECTION -->
+
+        <div class="welcome-section">
+
+            <div class="logo">
+                EyeCare <span>AI</span>
+            </div>
+
+            <h1>
+                Welcome Back to
+                Smart Eye Care
+            </h1>
+
+            <p>
+                Your intelligent eye care assistant.
+                Login to access AI-based eye disease
+                classification, eye care information
+                and personalized project features.
+            </p>
+
+            <div class="eye-icon">
+                👁️
+            </div>
+
+            <div class="tagline">
+                Smart Technology for Better Eye Awareness
+            </div>
+
+        </div>
+
+        <!-- RIGHT LOGIN FORM -->
+
+        <div class="form-section">
+
+            <h2>Login to Your Account</h2>
+
+            <p class="subtitle">
+                Enter your details to continue.
+            </p>
+
+            <!-- FLASH MESSAGES -->
+
+            {% if error %}
+
+                <div class="message error">
+                    {{ error }}
+                </div>
+
+            {% endif %}
+
+            {% if success %}
+
+                <div class="message success">
+                    {{ success }}
+                </div>
+
+            {% endif %}
+
+            <!-- LOGIN FORM -->
+
+            <form action="{{ url_for('login') }}" method="POST">
+
+                <div class="form-group">
+
+                    <label for="email">
+                        Email Address
+                    </label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="Enter your email"
+                        maxlength="254"
+                        autocomplete="email"
+                        required
+                    >
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <div class="password-wrapper">
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Enter your password"
+                            autocomplete="current-password"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            class="show-password"
+                            onclick="togglePassword()"
+                        >
+                            Show
+                        </button>
+
+                    </div>
+
+                </div>
+
+                <button type="submit" class="login-btn">
+                    Login
+                </button>
+
+            </form>
+
+            <div class="signup-text">
+
+                Don't have an account?
+
+                <a href="{{ url_for('signup') }}">
+                    Create Account
+                </a>
+
+            </div>
+
+            <div class="footer-text">
+
+                © 2026 EyeCare AI.
+                All Rights Reserved.
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        function togglePassword() {
+
+            const password = document.getElementById("password");
+            const button = document.querySelector(".show-password");
+
+            if (password.type === "password") {
+
+                password.type = "text";
+                button.textContent = "Hide";
+
+            } else {
+
+                password.type = "password";
+                button.textContent = "Show";
+
+            }
+
+        }
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>EyeCare AI | Eye Disease Classification</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <script
+        src="{{ url_for('static', filename='script.js') }}"
+        defer>
+    </script>
+</head>
+
+<body>
+
+<div class="app-layout">
+
+    <!-- ==================================
+         SIDEBAR
+    ================================== -->
+
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="brand-icon">
+                <i class="fa-solid fa-eye"></i>
+            </div>
+
+            <div>
+                <h2>EyeCare AI</h2>
+                <small>Retinal Intelligence</small>
+            </div>
+        </div>
+
+        <p class="nav-heading">MAIN MENU</p>
+
+        <nav class="navigation">
+
+            <a href="#" class="nav-link active" data-page="dashboard">
+                <i class="fa-solid fa-house"></i>
+                Dashboard
+            </a>
+
+            <a href="#" class="nav-link" data-page="scanner">
+                <i class="fa-solid fa-camera"></i>
+                Retinal Scanner
+            </a>
+
+            <a href="#" class="nav-link" data-page="gradcam">
+                <i class="fa-solid fa-brain"></i>
+                Grad-CAM
+            </a>
+
+            <a href="#" class="nav-link" data-page="disease">
+                <i class="fa-solid fa-notes-medical"></i>
+                Disease Information
+            </a>
+
+            <a href="#" class="nav-link" data-page="care">
+                <i class="fa-solid fa-heart-pulse"></i>
+                Eye Care
+            </a>
+
+            <a href="#" class="nav-link" data-page="history">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                Prediction History
+            </a>
+
+            <a href="#" class="nav-link" data-page="surgery">
+                <i class="fa-solid fa-user-doctor"></i>
+                Eye Surgery Guide
+            </a>
+
+            <!-- MODULE 8: GEMINI CHATBOT -->
+            <a href="#" class="nav-link" data-page="chatbot">
+                <i class="fa-solid fa-comments"></i>
+                AI EyeCare Chatbot
+            </a>
+
+            <!-- MODULE 9: NEARBY EYE CENTRES -->
+            <!-- This link intentionally does not use nav-link class.
+                 Existing script.js intercepts nav-link clicks. -->
+
+            <a href="{{ url_for('eye_centres') }}"
+               style="display:flex;
+                      align-items:center;
+                      gap:13px;
+                      color:#aeb8cd;
+                      padding:13px 12px;
+                      border-radius:9px;
+                      text-decoration:none;
+                      font-size:12px;">
+
+                <i class="fa-solid fa-map-location-dot"
+                   style="width:18px;text-align:center;"></i>
+
+                Nearby Eye Centres
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+            <i class="fa-solid fa-shield-heart"></i>
+            <p>AI-powered educational eye-care support.</p>
+        </div>
+
+    </aside>
+
+
+    <!-- ==================================
+         MAIN CONTENT
+    ================================== -->
+
+    <main class="main-content">
+
+        <header class="topbar">
+
+            <div>
+                <h1 id="page-title">Dashboard</h1>
+                <p>Retinal image analysis and eye health information</p>
+            </div>
+
+            <div class="status">
+                <span></span> AI System
+            </div>
+
+        </header>
+
+
+        <!-- ==================================
+             MODULE 1: DASHBOARD
+        ================================== -->
+
+        <section id="dashboard" class="page active-page">
+
+            <div class="welcome-card">
+
+                <div>
+                    <span class="eyebrow">
+                        WELCOME TO EYECARE AI
+                    </span>
+
+                    <h2>Understand Your Eye Health With AI</h2>
+
+                    <p>
+                        Upload a retinal image to explore an
+                        AI-generated classification and
+                        Grad-CAM visualization.
+                    </p>
+
+                    <button class="primary-btn" data-go="scanner">
+                        <i class="fa-solid fa-upload"></i>
+                        Start Image Analysis
+                    </button>
+                </div>
+
+                <div class="welcome-icon">
+                    <i class="fa-solid fa-eye"></i>
+                </div>
+
+            </div>
+
+            <div class="section-heading">
+                <h2>Project Modules</h2>
+                <p>Explore the features available in this system.</p>
+            </div>
+
+            <div class="module-grid">
+
+                <article class="module-card" data-go="scanner">
+                    <i class="fa-solid fa-camera"></i>
+                    <h3>Retinal Image Scanner</h3>
+                    <p>Upload a retinal image for AI classification.</p>
+                </article>
+
+                <article class="module-card" data-go="gradcam">
+                    <i class="fa-solid fa-brain"></i>
+                    <h3>Grad-CAM Visualization</h3>
+                    <p>View the model's attention heatmap.</p>
+                </article>
+
+                <article class="module-card" data-go="disease">
+                    <i class="fa-solid fa-notes-medical"></i>
+                    <h3>Disease Information</h3>
+                    <p>Learn about the four classification categories.</p>
+                </article>
+
+                <article class="module-card" data-go="care">
+                    <i class="fa-solid fa-heart-pulse"></i>
+                    <h3>Eye Care Recommendations</h3>
+                    <p>Explore general eye-care guidance.</p>
+                </article>
+
+                <article class="module-card" data-go="history">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    <h3>Prediction History</h3>
+                    <p>Review previous image predictions.</p>
+                </article>
+
+                <article class="module-card" data-go="surgery">
+                    <i class="fa-solid fa-user-doctor"></i>
+                    <h3>Eye Surgery Guide</h3>
+                    <p>
+                        Explore laser surgery procedures
+                        and recovery information.
+                    </p>
+                </article>
+
+                <!-- MODULE 8: CHATBOT CARD -->
+
+                <article class="module-card" data-go="chatbot">
+                    <i class="fa-solid fa-comments"></i>
+                    <h3>AI EyeCare Chatbot</h3>
+                    <p>
+                        Ask eye-health questions and receive
+                        educational answers powered by Gemini AI.
+                    </p>
+                </article>
+
+                <!-- MODULE 9: MAP CARD -->
+                <!-- Real hyperlink opens the separate Flask map page. -->
+
+                <a href="{{ url_for('eye_centres') }}"
+                   class="module-card"
+                   style="display:block;
+                          text-decoration:none;
+                          color:inherit;">
+
+                    <i class="fa-solid fa-map-location-dot"></i>
+
+                    <h3>Nearby Eye Hospitals &amp; Clinics</h3>
+
+                    <p>
+                        Find eye hospitals and clinics on
+                        an interactive map and get directions.
+                    </p>
+                </a>
+
+            </div>
+
+            <div class="notice">
+                <i class="fa-solid fa-circle-info"></i>
+                This project is an educational AI system,
+                not a medical diagnostic service.
+            </div>
+
+        </section>
+
+
+        <!-- ==================================
+             MODULE 2: RETINAL SCANNER
+        ================================== -->
+
+        <section id="scanner" class="page">
+
+            <div class="section-heading">
+                <h2>Retinal Image Scanner</h2>
+                <p>Upload a JPG or PNG retinal image to analyse it.</p>
+            </div>
+
+            <div class="scanner-box">
+
+                <div class="upload-area" id="upload-area">
+
+                    <div id="preview-placeholder">
+
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+
+                        <h3>Upload Retinal Image</h3>
+
+                        <p>
+                            Drag and drop an image here
+                            or select a file.
+                        </p>
+
+                        <label for="image-input" class="primary-btn">
+                            Choose Image
+                        </label>
+
+                        <p class="file-note">
+                            JPG, JPEG or PNG · Maximum 10 MB
+                        </p>
+
+                    </div>
+
+                    <img
+                        id="image-preview"
+                        alt="Selected retinal image preview">
+                </div>
+
+                <input
+                    type="file"
+                    id="image-input"
+                    accept=".jpg,.jpeg,.png,image/jpeg,image/png"
+                    hidden>
+
+                <div class="scanner-actions">
+
+                    <button
+                        id="analyze-btn"
+                        class="primary-btn"
+                        disabled>
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        Analyze Image
+                    </button>
+
+                    <button id="clear-btn" class="secondary-btn">
+                        <i class="fa-solid fa-trash"></i>
+                        Clear Image
+                    </button>
+
+                </div>
+
+                <p id="scanner-message" class="message" role="status"></p>
+
+            </div>
+
+
+            <!-- ANALYSIS RESULTS -->
+
+            <div id="analysis-result" class="analysis-result" hidden>
+
+                <div class="section-heading">
+                    <h2>AI Analysis Results</h2>
+                    <p>Results generated from the uploaded retinal image.</p>
+                </div>
+
+                <div class="result-card prediction-card">
+
+                    <h3>
+                        <i class="fa-solid fa-brain"></i>
+                        Disease Prediction
+                    </h3>
+
+                    <h2 id="prediction-name">--</h2>
+
+                    <p>
+                        Model confidence:
+                        <strong id="prediction-confidence">--</strong>
+                    </p>
+
+                </div>
+
+                <div class="result-images">
+
+                    <div class="result-card">
+                        <h3>Uploaded Retinal Image</h3>
+                        <img
+                            id="uploaded-result-image"
+                            alt="Uploaded retinal image">
+                    </div>
+
+                    <div class="result-card">
+                        <h3>Grad-CAM Heatmap</h3>
+                        <img
+                            id="heatmap-result-image"
+                            alt="Grad-CAM visualisation">
+                    </div>
+
+                </div>
+
+                <div class="result-card">
+
+                    <h3>
+                        <i class="fa-solid fa-notes-medical"></i>
+                        Disease Information
+                    </h3>
+
+                    <h4 id="disease-info-name"></h4>
+                    <p id="disease-description"></p>
+
+                    <h4>Symptoms</h4>
+                    <ul id="disease-symptoms"></ul>
+
+                    <h4>Causes</h4>
+                    <ul id="disease-causes"></ul>
+
+                </div>
+
+                <div class="result-card">
+
+                    <h3>
+                        <i class="fa-solid fa-heart-pulse"></i>
+                        Eye Care Recommendations
+                    </h3>
+
+                    <h4 id="care-title"></h4>
+                    <ul id="care-recommendations"></ul>
+
+                </div>
+
+                <div class="notice">
+                    AI predictions are educational only and must not
+                    be treated as a medical diagnosis.
+                    Consult a qualified eye specialist.
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==================================
+             MODULE 3: GRAD-CAM
+        ================================== -->
+
+        <section id="gradcam" class="page">
+
+            <div class="section-heading">
+                <h2>Grad-CAM Visualization</h2>
+                <p>
+                    Understand which image regions influenced
+                    the model's prediction.
+                </p>
+            </div>
+
+            <div class="result-card">
+
+                <h3>Latest Grad-CAM Heatmap</h3>
+
+                <p>
+                    Upload and analyse an image in the
+                    Retinal Scanner module to generate a heatmap.
+                </p>
+
+                <img
+                    id="gradcam-page-image"
+                    class="standalone-heatmap"
+                    alt="Latest Grad-CAM heatmap"
+                    hidden>
+
+                <button class="primary-btn" data-go="scanner">
+                    Open Retinal Scanner
+                </button>
+
+            </div>
+
+            <div class="notice">
+                The heatmap represents model attention.
+                It does not identify or confirm diseased tissue.
+            </div>
+
+        </section>
+
+
+        <!-- ==================================
+             MODULE 4: DISEASE INFORMATION
+        ================================== -->
+
+        <section id="disease" class="page">
+
+            <div class="section-heading">
+                <h2>Eye Disease Information</h2>
+                <p>
+                    Educational overview of the four categories
+                    used by this model.
+                </p>
+            </div>
+
+            <div class="info-grid">
+
+                <article class="result-card">
+
+                    <h3>Cataract</h3>
+
+                    <p>
+                        A condition involving clouding of the
+                        eye's natural lens, which can affect vision.
+                    </p>
+
+                    <p>
+                        <strong>Possible symptoms:</strong>
+                        Blurry vision, glare, faded colours.
+                    </p>
+
+                </article>
+
+                <article class="result-card">
+
+                    <h3>Diabetic Retinopathy</h3>
+
+                    <p>
+                        Diabetes-related damage to blood vessels
+                        in the retina.
+                    </p>
+
+                    <p>
+                        <strong>Possible symptoms:</strong>
+                        Blurred vision, floaters, changing vision.
+                    </p>
+
+                </article>
+
+                <article class="result-card">
+
+                    <h3>Glaucoma</h3>
+
+                    <p>
+                        A group of eye conditions that can damage
+                        the optic nerve.
+                    </p>
+
+                    <p>
+                        <strong>Possible symptoms:</strong>
+                        Often no early symptoms;
+                        later vision loss may occur.
+                    </p>
+
+                </article>
+
+                <article class="result-card">
+
+                    <h3>Normal</h3>
+
+                    <p>
+                        The model classified the uploaded image
+                        as belonging to its normal training category.
+                    </p>
+
+                    <p>
+                        <strong>Important:</strong>
+                        This does not guarantee that the eye
+                        is disease-free.
+                    </p>
+
+                </article>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==================================
+             MODULE 5: EYE CARE
+        ================================== -->
+
+        <section id="care" class="page">
+
+            <div class="section-heading">
+                <h2>Eye Care Recommendations</h2>
+                <p>General information to support healthy eye-care habits.</p>
+            </div>
+
+            <div class="info-grid">
+
+                <article class="result-card">
+                    <h3>Regular Eye Exams</h3>
+                    <p>
+                        Arrange routine eye examinations with
+                        a qualified eye-care professional.
+                    </p>
+                </article>
+
+                <article class="result-card">
+                    <h3>Manage Diabetes</h3>
+                    <p>
+                        People with diabetes should follow
+                        their clinician's advice and attend
+                        recommended retinal screenings.
+                    </p>
+                </article>
+
+                <article class="result-card">
+                    <h3>Healthy Habits</h3>
+                    <p>
+                        Eat a balanced diet, avoid smoking
+                        and protect eyes from excessive sunlight.
+                    </p>
+                </article>
+
+                <article class="result-card">
+                    <h3>Screen Breaks</h3>
+                    <p>
+                        Take regular breaks during prolonged
+                        screen use and adjust screen brightness.
+                    </p>
+                </article>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==================================
+             MODULE 6: PREDICTION HISTORY
+        ================================== -->
+
+        <section id="history" class="page">
+
+            <div class="section-heading heading-row">
+
+                <div>
+                    <h2>Prediction History</h2>
+                    <p>Review predictions saved in this browser.</p>
+                </div>
+
+                <button id="clear-history" class="secondary-btn">
+                    <i class="fa-solid fa-trash"></i>
+                    Clear History
+                </button>
+
+            </div>
+
+            <p id="history-empty" class="empty-message">
+                No predictions yet. Analyse an image to see your history.
+            </p>
+
+            <div id="history-list"></div>
+
+        </section>
+
+
+        <!-- ==================================
+             MODULE 7: EYE SURGERY GUIDE
+        ================================== -->
+
+        <section id="surgery" class="page">
+
+            <div class="surgery-hero">
+
+                <span class="surgery-tag">
+                    EYECARE AI · SURGERY EDUCATION
+                </span>
+
+                <h2>Laser Eye Surgery Guide</h2>
+
+                <p>
+                    Explore six laser vision-correction techniques,
+                    understand how these procedures work and learn
+                    about recovery and aftercare.
+                </p>
+
+            </div>
+
+            <div class="section-heading">
+                <h2>Types of Laser Eye Surgery</h2>
+                <p>
+                    Learn about six techniques used for
+                    laser vision correction.
+                </p>
+            </div>
+
+            <div class="surgery-grid">
+
+                <!-- LASIK -->
+
+                <article class="surgery-card">
+
+                    <div class="surgery-icon">
+                        <i class="fa-solid fa-eye"></i>
+                    </div>
+
+                    <h3>1. LASIK</h3>
+
+                    <p>
+                        LASIK creates a thin flap in the cornea.
+                        A laser reshapes the underlying corneal
+                        tissue to correct certain refractive errors.
+                    </p>
+
+                    <h4>Key Points</h4>
+
+                    <ul>
+                        <li>Uses a corneal flap.</li>
+                        <li>Vision often improves quickly.</li>
+                        <li>May cause temporary dry eyes.</li>
+                        <li>Corneal thickness must be assessed.</li>
+                    </ul>
+
+                    <div class="surgery-label">
+                        Flap-based procedure
+                    </div>
+
+                </article>
+
+
+                <!-- PRK -->
+
+                <article class="surgery-card">
+
+                    <div class="surgery-icon">
+                        <i class="fa-solid fa-microscope"></i>
+                    </div>
+
+                    <h3>2. PRK</h3>
+
+                    <p>
+                        PRK removes the thin outer surface
+                        layer of the cornea. A laser then
+                        reshapes the cornea to correct vision.
+                    </p>
+
+                    <h4>Key Points</h4>
+
+                    <ul>
+                        <li>Does not create a LASIK-style flap.</li>
+                        <li>Surface layer heals naturally.</li>
+                        <li>Initial recovery is slower than LASIK.</li>
+                        <li>May be considered when LASIK is unsuitable.</li>
+                    </ul>
+
+                    <div class="surgery-label">
+                        Surface laser procedure
+                    </div>
+
+                </article>
+
+
+                <!-- LASEK -->
+
+                <article class="surgery-card">
+
+                    <div class="surgery-icon">
+                        <i class="fa-solid fa-eye-low-vision"></i>
+                    </div>
+
+                    <h3>3. LASEK</h3>
+
+                    <p>
+                        LASEK loosens the thin outer corneal layer,
+                        moves it aside and uses a laser to reshape
+                        the cornea before repositioning the layer.
+                    </p>
+
+                    <h4>Key Points</h4>
+
+                    <ul>
+                        <li>Works on the corneal surface.</li>
+                        <li>Does not use a LASIK-style flap.</li>
+                        <li>Recovery takes time as the surface heals.</li>
+                        <li>Temporary discomfort may occur.</li>
+                    </ul>
+
+                    <div class="surgery-label">
+                        Surface-based technique
+                    </div>
+
+                </article>
+
+
+                <!-- EPI-LASIK -->
+
+                <article class="surgery-card">
+
+                    <div class="surgery-icon">
+                        <i class="fa-solid fa-eye"></i>
+                    </div>
+
+                    <h3>4. Epi-LASIK</h3>
+
+                    <p>
+                        Epi-LASIK uses a special instrument
+                        to separate the thin epithelial layer
+                        from the cornea. Laser treatment
+                        then reshapes the cornea.
+                    </p>
+
+                    <h4>Key Points</h4>
+
+                    <ul>
+                        <li>Uses an epithelial separation technique.</li>
+                        <li>Does not create a LASIK-style flap.</li>
+                        <li>Surface healing is required.</li>
+                        <li>Availability varies between clinics.</li>
+                    </ul>
+
+                    <div class="surgery-label">
+                        Surface-based technique
+                    </div>
+
+                </article>
+
+
+                <!-- TRANSPRK -->
+
+                <article class="surgery-card">
+
+                    <div class="surgery-icon">
+                        <i class="fa-solid fa-bullseye"></i>
+                    </div>
+
+                    <h3>5. TransPRK</h3>
+
+                    <p>
+                        TransPRK uses an excimer laser to remove
+                        the surface epithelial layer and reshape
+                        the cornea without using a surgical
+                        instrument for removal.
+                    </p>
+
+                    <h4>Key Points</h4>
+
+                    <ul>
+                        <li>All-laser surface procedure.</li>
+                        <li>No LASIK-style flap is created.</li>
+                        <li>Surface healing is necessary.</li>
+                        <li>Early recovery may involve discomfort.</li>
+                    </ul>
+
+                    <div class="surgery-label">
+                        No-touch surface procedure
+                    </div>
+
+                </article>
+
+
+                <!-- SMILE -->
+
+                <article class="surgery-card">
+
+                    <div class="surgery-icon">
+                        <i class="fa-solid fa-crosshairs"></i>
+                    </div>
+
+                    <h3>6. SMILE</h3>
+
+                    <p>
+                        SMILE uses a femtosecond laser to create
+                        a small piece of tissue inside the cornea.
+                        This tissue is removed through a small incision.
+                    </p>
+
+                    <h4>Key Points</h4>
+
+                    <ul>
+                        <li>Uses a small incision.</li>
+                        <li>Does not create a LASIK-style flap.</li>
+                        <li>Can correct certain refractive errors.</li>
+                        <li>Not suitable for every prescription.</li>
+                    </ul>
+
+                    <div class="surgery-label">
+                        Small-incision procedure
+                    </div>
+
+                </article>
+
+            </div>
+
+
+            <!-- HOW SURGERY WORKS -->
+
+            <div class="section-heading">
+                <h2>How Does Laser Eye Surgery Work?</h2>
+                <p>
+                    Understand the general process before
+                    and during laser vision-correction surgery.
+                </p>
+            </div>
+
+            <div class="surgery-checker">
+
+                <h3>Before Surgery: Eye Assessment</h3>
+
+                <div class="age-guidance-grid">
+
+                    <article class="age-card">
+                        <div class="age-icon">
+                            <i class="fa-solid fa-user-doctor"></i>
+                        </div>
+                        <h3>Eye Examination</h3>
+                        <p>
+                            The specialist checks overall eye
+                            health and examines the patient's vision.
+                        </p>
+                    </article>
+
+                    <article class="age-card">
+                        <div class="age-icon">
+                            <i class="fa-solid fa-ruler-combined"></i>
+                        </div>
+                        <h3>Corneal Measurements</h3>
+                        <p>
+                            Corneal thickness, shape and other
+                            measurements are evaluated.
+                        </p>
+                    </article>
+
+                    <article class="age-card">
+                        <div class="age-icon">
+                            <i class="fa-solid fa-glasses"></i>
+                        </div>
+                        <h3>Prescription Check</h3>
+                        <p>
+                            The specialist reviews the glasses
+                            prescription and checks its stability.
+                        </p>
+                    </article>
+
+                </div>
+
+                <div class="section-heading">
+                    <h3>General Surgery Steps</h3>
+                    <p>
+                        The exact steps depend on the selected procedure.
+                    </p>
+                </div>
+
+                <div class="age-guidance-grid">
+
+                    <article class="age-card">
+                        <div class="age-icon">
+                            <i class="fa-solid fa-clipboard-check"></i>
+                        </div>
+                        <h3>Step 1: Preparation</h3>
+                        <p>
+                            The eye is examined, prepared and numbed
+                            using prescribed anaesthetic eye drops.
+                        </p>
+                    </article>
+
+                    <article class="age-card">
+                        <div class="age-icon">
+                            <i class="fa-solid fa-crosshairs"></i>
+                        </div>
+                        <h3>Step 2: Laser Treatment</h3>
+                        <p>
+                            The surgeon uses the appropriate laser
+                            technique to reshape the cornea.
+                        </p>
+                    </article>
+
+                    <article class="age-card">
+                        <div class="age-icon">
+                            <i class="fa-solid fa-eye"></i>
+                        </div>
+                        <h3>Step 3: Aftercare</h3>
+                        <p>
+                            The specialist provides eye drops,
+                            protective instructions and follow-up appointments.
+                        </p>
+                    </article>
+
+                </div>
+
+                <div class="notice">
+                    <i class="fa-solid fa-circle-info"></i>
+                    Not every procedure follows the same steps.
+                    A qualified refractive surgeon decides which
+                    procedure is appropriate after an examination.
+                </div>
+
+            </div>
+
+
+            <!-- RECOVERY GUIDE -->
+
+            <div class="section-heading">
+                <h2>Surgery Recovery Guide</h2>
+                <p>
+                    General recovery information and precautions
+                    after laser vision-correction procedures.
+                </p>
+            </div>
+
+            <div class="info-grid">
+
+                <article class="result-card">
+                    <h3>
+                        <i class="fa-solid fa-eye"></i>
+                        Rest Your Eyes
+                    </h3>
+                    <p>
+                        Rest after the procedure and avoid
+                        rubbing or pressing your eyes.
+                    </p>
+                </article>
+
+                <article class="result-card">
+                    <h3>
+                        <i class="fa-solid fa-droplet"></i>
+                        Use Prescribed Drops
+                    </h3>
+                    <p>
+                        Use prescribed eye drops exactly as
+                        directed by your eye specialist.
+                    </p>
+                </article>
+
+                <article class="result-card">
+                    <h3>
+                        <i class="fa-solid fa-sun"></i>
+                        Protect Your Eyes
+                    </h3>
+                    <p>
+                        Follow advice about sunglasses, sunlight,
+                        dust and environmental exposure.
+                    </p>
+                </article>
+
+                <article class="result-card">
+                    <h3>
+                        <i class="fa-solid fa-laptop"></i>
+                        Screen Time
+                    </h3>
+                    <p>
+                        Follow your surgeon's advice about returning
+                        to screens and normal daily activities.
+                    </p>
+                </article>
+
+                <article class="result-card">
+                    <h3>
+                        <i class="fa-solid fa-calendar-check"></i>
+                        Follow-up Visits
+                    </h3>
+                    <p>
+                        Attend follow-up appointments so the
+                        specialist can monitor healing.
+                    </p>
+                </article>
+
+                <article class="result-card">
+                    <h3>
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        Warning Signs
+                    </h3>
+                    <p>
+                        Seek urgent medical advice for severe pain,
+                        sudden vision loss, increasing redness or
+                        rapidly worsening symptoms.
+                    </p>
+                </article>
+
+            </div>
+
+            <div class="surgery-disclaimer">
+
+                <i class="fa-solid fa-triangle-exclamation"></i>
+
+                <div>
+                    <strong>Important Medical Disclaimer</strong>
+
+                    <p>
+                        This module provides general educational
+                        information only. It does not diagnose eye
+                        conditions, recommend surgery or determine
+                        patient suitability. Laser vision correction
+                        has risks and may not eliminate the need for
+                        glasses. Only a qualified eye surgeon can
+                        assess individual suitability.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==================================
+             MODULE 8: GEMINI AI CHATBOT
+             ORIGINAL WORKING INTERFACE
+        ================================== -->
+
+        <section id="chatbot" class="page">
+
+            <div class="section-heading">
+
+                <h2>AI EyeCare Chatbot</h2>
+
+                <p>
+                    Your educational AI assistant for
+                    eye diseases, symptoms and general eye care.
+                </p>
+
+            </div>
+
+
+            <!-- MAIN CHATBOT CONTAINER -->
+
+            <div class="chatbot-shell">
+
+                <!-- CHATBOT HEADER -->
+
+                <div class="chatbot-header">
+
+                    <div class="chatbot-identity">
+
+                        <div class="chatbot-avatar">
+                            <i class="fa-solid fa-robot"></i>
+                        </div>
+
+                        <div>
+                            <h3>EyeCare AI Assistant</h3>
+                            <p>
+                                Powered by Google Gemini
+                                | Educational Guidance
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <button
+                        type="button"
+                        id="chat-clear-btn"
+                        class="secondary-btn">
+                        <i class="fa-solid fa-trash-can"></i>
+                        Clear Chat
+                    </button>
+
+                </div>
+
+
+                <!-- CHAT CONVERSATION -->
+
+                <div
+                    id="chat-messages"
+                    class="chatbot-messages"
+                    role="log"
+                    aria-live="polite"
+                    aria-relevant="additions text">
+
+                    <div class="chat-message bot-message">
+
+                        <div class="chat-bubble">
+                            Hello! I'm your EyeCare AI Assistant.
+                            You can ask me questions about cataract,
+                            glaucoma, diabetic retinopathy, eye
+                            examinations and general eye-care habits.
+
+                            How can I help you today?
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- SUGGESTED QUESTIONS -->
+
+                <div class="chatbot-suggestions">
+
+                    <button
+                        type="button"
+                        class="chat-suggestion"
+                        data-question="What are the early signs of glaucoma?">
+                        Glaucoma Symptoms
+                    </button>
+
+                    <button
+                        type="button"
+                        class="chat-suggestion"
+                        data-question="How can I take care of my eyes every day?">
+                        Daily Eye Care
+                    </button>
+
+                    <button
+                        type="button"
+                        class="chat-suggestion"
+                        data-question="What is diabetic retinopathy?">
+                        Diabetic Retinopathy
+                    </button>
+
+                </div>
+
+
+                <!-- MESSAGE INPUT -->
+
+                <form
+                    id="chat-form"
+                    class="chatbot-composer">
+
+                    <label
+                        for="chat-input"
+                        class="chat-input-label">
+                        Your Message
+                    </label>
+
+                    <textarea
+                        id="chat-input"
+                        name="message"
+                        rows="2"
+                        maxlength="2000"
+                        placeholder="Ask an eye-health question..."
+                        required>
+                    </textarea>
+
+                    <button
+                        type="submit"
+                        id="chat-send-btn"
+                        class="primary-btn">
+
+                        <i class="fa-solid fa-paper-plane"></i>
+                        Send
+
+                    </button>
+
+                </form>
+
+                <p
+                    id="chat-status"
+                    class="message"
+                    role="status"
+                    aria-live="polite">
+                </p>
+
+            </div>
+
+
+            <!-- CHATBOT DISCLAIMER -->
+
+            <div class="notice">
+
+                <i class="fa-solid fa-circle-info"></i>
+
+                The AI EyeCare Assistant provides educational
+                information only and cannot diagnose eye diseases
+                or prescribe medical treatment.
+
+                For sudden vision loss, severe eye pain or eye
+                injury, seek urgent medical care.
+
+                Do not share personal medical records or
+                identifying information in chat.
+
+            </div>
+
+        </section>
+
+
+        <!-- ==================================
+             MODULE 9: NEARBY EYE CENTRES
+        ================================== -->
+
+        <!--
+            Module 9 uses the separate template:
+
+            templates/map.html
+
+            Flask route:
+
+            /eye-centres
+
+            Navigation links are included in:
+            1. Sidebar
+            2. Dashboard module card
+
+            The existing chatbot JavaScript is unchanged.
+        -->
+
+
+        <!-- ==================================
+             FOOTER
+        ================================== -->
+
+        <footer>
+            EyeCare AI · Educational Eye Disease Classification Project
+        </footer>
+
+    </main>
+
+</div>
+
+</body>
+</html>

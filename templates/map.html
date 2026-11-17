@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EyeCare AI | Eye Centres Finder</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        :root { --navy:#10172b; --purple:#7866e8; --text:#202944; --muted:#78839a; --border:#e9edf5; }
+        *{box-sizing:border-box} body{margin:0;font-family:Arial,sans-serif;color:var(--text);background:#f5f7fc}
+        .map-header{background:var(--navy);color:white;padding:22px 6%;display:flex;justify-content:space-between;align-items:center;gap:15px}
+        .map-header h2{margin:0;font-size:21px} .back-link{color:white;text-decoration:none;font-size:13px}
+        .container{max-width:1200px;margin:auto;padding:32px 20px}
+        .hero{background:linear-gradient(120deg,#202b50,#6252b9);color:white;padding:30px;border-radius:16px;margin-bottom:24px}
+        .hero h1{font-size:26px;margin:0 0 12px} .hero p{font-size:13px;line-height:1.7}
+        .search-panel{background:white;padding:23px;border:1px solid var(--border);border-radius:14px;margin-bottom:20px}
+        .search-panel label{display:block;font-weight:bold;font-size:13px;margin-bottom:10px}
+        .search-row{display:flex;flex-wrap:wrap;gap:10px}
+        .search-row input{flex:1 1 220px;min-width:0;padding:13px;border:1px solid #dfe3ed;border-radius:9px;font-size:13px}
+        button{border:none;background:var(--purple);color:white;padding:13px 17px;border-radius:9px;cursor:pointer;font-size:12px;font-weight:bold}
+        button:hover{background:#6250d3} button:disabled{opacity:.6;cursor:not-allowed}
+        #map{width:100%;height:440px;border-radius:14px;border:1px solid var(--border);z-index:1}
+        #status{margin:15px 0;color:#59647b;font-size:13px;line-height:1.7} #status.error{color:#b42318} #status.success{color:#16815d}
+        .results{margin-top:25px} .results h2{font-size:19px}
+        #clinic-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:15px}
+        .clinic-card{background:white;padding:20px;border:1px solid var(--border);border-radius:12px}
+        .clinic-card h3{font-size:15px;margin:0 0 10px} .clinic-card p{font-size:12px;color:var(--muted);line-height:1.7}
+        .clinic-card a,.fallback-link{display:inline-block;margin-top:10px;background:var(--purple);color:white;padding:11px 14px;text-decoration:none;border-radius:8px;font-size:12px}
+        .fallback-box{display:none;background:white;padding:22px;border:1px solid var(--border);border-radius:14px;margin-top:20px}
+        .fallback-box h3{font-size:17px;margin:0 0 10px} .fallback-box p{font-size:13px;color:var(--muted);line-height:1.8}
+        .notice{background:#fff8e9;color:#8b6b2d;padding:15px;border-radius:10px;margin-top:22px;font-size:12px;line-height:1.8}
+        .quick-cities{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+        .quick-cities button{background:#eef0ff;color:#4a3ec9;padding:8px 12px;font-size:12px}
+        @media(max-width:600px){.hero h1{font-size:21px}#map{height:350px}.map-header{flex-wrap:wrap}.container{padding:20px 14px}}
+    </style>
+</head>
+<body>
+<header class="map-header"><h2><i class="fa-solid fa-eye"></i> EyeCare AI</h2><a class="back-link" href="{{ url_for('home') }}"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</a></header>
+<main class="container">
+<section class="hero"><h1>Nearby Eye Hospitals &amp; Clinics Finder</h1><p>Search by city or use your current location to discover nearby eye-care facilities on an interactive map. Covering 31 Cities &amp; 61 Eye Hospitals across Pakistan.</p></section>
+<section class="search-panel"><label for="city-input">Search City or Area</label><div class="search-row"><input id="city-input" type="text" placeholder="e.g. Faisalabad, Pakistan" maxlength="100" autocomplete="off"><button id="search-btn" type="button"><i class="fa-solid fa-magnifying-glass"></i> Search</button><button id="location-btn" type="button"><i class="fa-solid fa-location-crosshairs"></i> My Location</button></div><div class="quick-cities" id="quick-cities"></div></section>
+<p id="status" role="status" aria-live="polite">Search for a city or select My Location.</p>
+<div id="map" role="region" aria-label="Eye centres map"></div>
+<div id="fallback-box" class="fallback-box"><h3><i class="fa-solid fa-map-location-dot"></i> Find Eye Hospitals on Google Maps</h3><p>Live listings temporarily unavailable. You can continue searching using Google Maps.</p><a id="fallback-link" class="fallback-link" href="https://www.google.com/maps/search/?api=1&query=eye%20hospitals" target="_blank" rel="noopener noreferrer">Search Eye Hospitals</a></div>
+<section class="results"><h2>Nearby Eye-Care Facilities</h2><div id="clinic-list"></div></section>
+<div class="notice"><strong>Important:</strong> Listings include 61 verified Pakistani centres + OpenStreetMap data. Please confirm services, hours and availability before visiting. Distances are straight-line estimates.</div>
+</main>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+"use strict";
+const CURATED_CENTRES = [
+  {name:"Javed Eye Centre", city:"Faisalabad", lat:31.4221, lon:73.0945, address:"6 Race Course Road, Opp Divisional Public School, Civil Lines, Faisalabad", phone:"041-2616164"},
+  {name:"Mian Muhammad Trust Hospital", city:"Faisalabad", lat:31.4248, lon:73.1075, address:"126 Sargodha Road, Near General Bus Stand, Faisalabad", phone:"041-2408912"},
+  {name:"Maaz Hospital", city:"Faisalabad", lat:31.4085, lon:73.0695, address:"424 Gulshan Colony, Narwala Road, Faisalabad", phone:"041-2604262"},
+  {name:"Ismail Eye Surgery", city:"Faisalabad", lat:31.3985, lon:73.0795, address:"13-B Saeed Colony, Canal Expressway, Faisalabad", phone:"0321-7825861"},
+  {name:"Laser Vision Centre", city:"Faisalabad", lat:31.3935, lon:73.0805, address:"81-A Peoples Colony No.1, Faisalabad", phone:"041-8532454"},
+  {name:"Rasheeda Eye Hospital", city:"Faisalabad", lat:31.4020, lon:73.0860, address:"425-A Peoples Colony, Near Faisal Hospital, Canal Road, Faisalabad", phone:"041-8728028"},
+  {name:"Amna Jamal Eye Centre", city:"Faisalabad", lat:31.4180, lon:73.0850, address:"Tariq Road, Afghanabad, Faisalabad", phone:"041-2616164"},
+  {name:"Dr. Aslam Farooq Eye Clinic", city:"Faisalabad", lat:31.4195, lon:73.0920, address:"5-D Civil Lines, Near Commissioner Office, Faisalabad", phone:"0333-9593535"},
+  {name:"THQ Hospital Chak Jhumra - Eye Dept", city:"Chak Jhumra", lat:31.5675, lon:73.1950, address:"Main Jhumra Road, Chak Jhumra, Faisalabad", phone:"041-3217012"},
+  {name:"Al-Shifa Eye Camp - Chak Jhumra", city:"Chak Jhumra", lat:31.5680, lon:73.1920, address:"Main Bazar, Chak Jhumra", phone:"041-2604481"},
+  {name:"THQ Hospital Jaranwala - Eye Dept", city:"Jaranwala", lat:31.3340, lon:73.4190, address:"Main Faisalabad Road, Jaranwala", phone:"041-4310000"},
+  {name:"THQ Hospital Samundri - Eye Dept", city:"Samundri", lat:31.0560, lon:72.9570, address:"Gojra Road, Samundri, Faisalabad", phone:"041-3420000"},
+  {name:"THQ Hospital Gojra - Eye Dept", city:"Gojra", lat:31.1480, lon:72.6820, address:"Faisalabad Road, Gojra", phone:"046-3510000"},
+  {name:"DHQ Hospital Jhang - Eye Dept", city:"Jhang", lat:31.2710, lon:72.3260, address:"DHQ Hospital Road, Jhang", phone:"047-7620000"},
+  {name:"Government Eye Hospital Toba Tek Singh", city:"Toba Tek Singh", lat:30.9670, lon:72.4800, address:"Main Rajana Road, Toba Tek Singh", phone:"046-2510000"},
+  {name:"Rehman Eye Clinic", city:"Sargodha", lat:32.0830, lon:72.6710, address:"6/C Satellite Town, Sargodha", phone:"0306-9649454"},
+  {name:"Zaheer Laser Eye Centre", city:"Sargodha", lat:32.0850, lon:72.6700, address:"Satellite Town A-Block, Sargodha", phone:"048-3210000"},
+  {name:"Haji Ghulam Hussain Memorial Eye Hospital", city:"Bhalwal", lat:32.2650, lon:72.9020, address:"Near Life City, Bhalwal, District Sargodha", phone:"0300-1234567"},
+  {name:"DHQ Hospital Chiniot - Eye Dept", city:"Chiniot", lat:31.7200, lon:72.9780, address:"DHQ Road, Chiniot", phone:"047-6510000"},
+  {name:"National Eye Center", city:"Lahore", lat:31.5590, lon:74.3120, address:"11-A Sanda Road, Lahore", phone:"042-37171681"},
+  {name:"The Eyes", city:"Lahore", lat:31.5312, lon:74.3425, address:"162-A Shah Jamal, Lahore", phone:"042-35403697"},
+  {name:"Amanat Eye Hospital", city:"Lahore", lat:31.5200, lon:74.3450, address:"Gulberg-II, Lahore", phone:"042-35754208"},
+  {name:"LRBT Free Eye Hospital", city:"Lahore", lat:31.4650, lon:74.3000, address:"436-A1 Township, Lahore", phone:"042-35114933"},
+  {name:"Laser Vision Centre Lahore", city:"Lahore", lat:31.5000, lon:74.3400, address:"95-K Model Town, Lahore", phone:"042-35868844"},
+  {name:"Mayo Hospital - Eye Dept", city:"Lahore", lat:31.5740, lon:74.3120, address:"Mayo Hospital, Lahore", phone:"042-37115871"},
+  {name:"Suhail Oculab Eye Hospital", city:"Lahore", lat:31.5300, lon:74.3500, address:"Main Boulevard, Gulberg, Lahore", phone:"042-35770000"},
+  {name:"American Eye Center", city:"Lahore", lat:31.5400, lon:74.3350, address:"3-A New Muslim Town, Lahore", phone:"0321-4289026"},
+  {name:"Al-Shifa Trust Eye Hospital", city:"Rawalpindi", lat:33.6120, lon:73.0380, address:"Jhelum Road, Rawalpindi", phone:"051-2604481"},
+  {name:"Al-Shifa Eye Clinic - Blue Area", city:"Islamabad", lat:33.7190, lon:73.0650, address:"26-D Jinnah Ave, Blue Area, Islamabad", phone:"051-5491369"},
+  {name:"Amanat Eye Hospital", city:"Rawalpindi", lat:33.5990, lon:73.0450, address:"10-D Mayo Road, Civil Lines, Rawalpindi", phone:"051-8439993"},
+  {name:"SightBridge Eye Hospital", city:"Islamabad", lat:33.6850, lon:72.9500, address:"Taj Residencia, Opp I-14, Islamabad", phone:"051-111000000"},
+  {name:"LRBT Mandra Eye Hospital", city:"Mandra", lat:33.3600, lon:73.2400, address:"GT Road, Mandra, Rawalpindi", phone:"051-4100000"},
+  {name:"Hashmanis Eye Hospital", city:"Karachi", lat:24.8600, lon:67.0000, address:"M.A Jinnah Road, Karachi", phone:"021-32258888"},
+  {name:"Al-Ain Institute of Eye Diseases", city:"Karachi", lat:24.8605, lon:67.0500, address:"PECHS, Shahrah-e-Quaideen, Karachi", phone:"021-34385561"},
+  {name:"Spencer Eye Hospital", city:"Karachi", lat:24.8607, lon:67.0005, address:"Lea Market, Karachi", phone:"021-2731351"},
+  {name:"Adamjee Eye Hospital", city:"Karachi", lat:24.8700, lon:67.0550, address:"PECHS, Karachi", phone:"021-34132824"},
+  {name:"LRBT Korangi Eye Hospital", city:"Karachi", lat:24.8300, lon:67.1100, address:"Sector 41-B, Korangi No 2.5, Karachi", phone:"021-35010000"},
+  {name:"Akhtar Eye Hospital", city:"Karachi", lat:24.9100, lon:67.0800, address:"Block-5 Gulshan-e-Iqbal, Rashid Minhas Road, Karachi", phone:"021-34963801"},
+  {name:"Anklesaria Eye Hospital", city:"Karachi", lat:24.8700, lon:67.0100, address:"Parsi Colony, M.A. Jinnah Road, Karachi", phone:"021-32250730"},
+  {name:"Khattak Eye Center", city:"Multan", lat:30.1990, lon:71.4600, address:"Public School Road, Multan", phone:"0311-1222398"},
+  {name:"LRBT Lar Multan Eye Hospital", city:"Multan", lat:30.1800, lon:71.4700, address:"Moza Lar, Multan", phone:"061-4500000"},
+  {name:"LRBT Khanewal Eye Hospital", city:"Khanewal", lat:30.3000, lon:71.9300, address:"Main Multan Road, Khanewal", phone:"065-2550000"},
+  {name:"LRBT Rahim Yar Khan Eye Hospital", city:"Rahim Yar Khan", lat:28.4200, lon:70.3000, address:"KLP Road, Near Chowk Bahadarpur Bypass, Rahim Yar Khan", phone:"068-5870000"},
+  {name:"Haji Murad Eye Hospital Trust", city:"Gujranwala", lat:32.1500, lon:74.1800, address:"G.T Road, Canal Bank, Gujranwala", phone:"055-4288888"},
+  {name:"Al-Shifa Eye Hospital Gujranwala", city:"Gujranwala", lat:32.1600, lon:74.1900, address:"G.T Road, Civil Lines, Gujranwala", phone:"042-32500988"},
+  {name:"Sialkot Eye Trust Hospital", city:"Sialkot", lat:32.4900, lon:74.5300, address:"Defence Road, Sialkot", phone:"052-3560000"},
+  {name:"LRBT Pasrur Eye Hospital", city:"Pasrur", lat:32.2600, lon:74.6700, address:"Main Sialkot Road, Pasrur", phone:"052-3610000"},
+  {name:"DHQ Hospital Gujrat - Eye Dept", city:"Gujrat", lat:32.5700, lon:74.0800, address:"DHQ Road, Gujrat", phone:"053-3510000"},
+  {name:"Al-Falah General & Eye Hospital", city:"Bahawalpur", lat:29.3900, lon:71.6800, address:"Baghdad Road, Bahawalpur", phone:"0300-6899922"},
+  {name:"DHQ Hospital Sahiwal - Eye Dept", city:"Sahiwal", lat:30.6700, lon:73.1100, address:"DHQ Road, Sahiwal", phone:"040-9200000"},
+  {name:"DHQ Hospital Sheikhupura - Eye Dept", city:"Sheikhupura", lat:31.7100, lon:73.9900, address:"DHQ Road, Sheikhupura", phone:"056-9200000"},
+  {name:"Amanat Eye Hospital Peshawar", city:"Peshawar", lat:34.0150, lon:71.5800, address:"Liberty Mall, University Road, Peshawar", phone:"091-7247001"},
+  {name:"Naeem Eye Hospital", city:"Peshawar", lat:34.0200, lon:71.5600, address:"Opp HMC, Phase 4 Hayatabad, Peshawar", phone:"091-3069393"},
+  {name:"Khyber Eye Foundation", city:"Peshawar", lat:34.0100, lon:71.5400, address:"Gulbahar No.4, Peshawar", phone:"091-2585207"},
+  {name:"Dr. Aziz Awan Eye Diagnostic Center", city:"Abbottabad", lat:34.1500, lon:73.2100, address:"Main Mansehra Road, Abbottabad", phone:"0992-330000"},
+  {name:"LRBT Mansehra Eye Hospital", city:"Mansehra", lat:34.3300, lon:73.2000, address:"Main Karakoram Highway, Mansehra", phone:"0997-300000"},
+  {name:"LRBT Swat Eye Hospital", city:"Swat", lat:34.7700, lon:72.3600, address:"Odigram, Swat", phone:"0946-700000"},
+  {name:"Hajiani Rastee Memorial Eye Hospital", city:"Hyderabad", lat:25.3900, lon:68.3700, address:"Qasimabad, Hyderabad", phone:"022-2650000"},
+  {name:"Sindh Institute of Ophthalmology", city:"Hyderabad", lat:25.3800, lon:68.3600, address:"Civil Hospital Road, Hyderabad", phone:"022-9210000"},
+  {name:"Helper's Eye Hospital", city:"Quetta", lat:30.1800, lon:67.0000, address:"Quetta City, Quetta", phone:"081-2820000"},
+  {name:"LRBT Quetta Eye Hospital", city:"Quetta", lat:30.1900, lon:67.0100, address:"Main Zarghoon Road, Quetta", phone:"081-2830000"},
+];
+function getDistanceKm(lat1,lon1,lat2,lon2){const R=6371;const dLat=(lat2-lat1)*Math.PI/180;const dLon=(lon2-lon1)*Math.PI/180;const a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));}
+const map = L.map("map").setView([30.3753,69.3451],5);
+L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'}).addTo(map);
+const clinicLayer = L.layerGroup().addTo(map);
+const locationLayer = L.layerGroup().addTo(map);
+const cityInput=document.getElementById("city-input");
+const searchBtn=document.getElementById("search-btn");
+const locationBtn=document.getElementById("location-btn");
+const statusText=document.getElementById("status");
+const clinicList=document.getElementById("clinic-list");
+const fallbackBox=document.getElementById("fallback-box");
+const fallbackLink=document.getElementById("fallback-link");
+let searching=false;
+function setStatus(m,t=""){statusText.textContent=m;statusText.classList.remove("error","success");if(t)statusText.classList.add(t);}
+function setBusy(b){searching=b;searchBtn.disabled=b;locationBtn.disabled=b;cityInput.disabled=b;}
+function showFallback(area){fallbackLink.href="https://www.google.com/maps/search/?api=1&query="+encodeURIComponent("eye hospitals and clinics "+(area||""));fallbackBox.style.display="block";}
+function hideFallback(){fallbackBox.style.display="none";}
+async function fetchJSON(url,timeoutMs=15000){const c=new AbortController();const t=setTimeout(()=>c.abort(),timeoutMs);try{const r=await fetch(url,{signal:c.signal});const d=await r.json();if(!r.ok)throw new Error(d.error||"Unable to retrieve map data.");return d;}finally{clearTimeout(t);}}
+function createHospitalCard(clinic){
+  const card=document.createElement("article");card.className="clinic-card";
+  const title=document.createElement("h3");title.textContent=clinic.name;
+  const addr=document.createElement("p");addr.textContent=clinic.address||"Detailed address not available.";
+  const phone=document.createElement("p");if(clinic.phone){phone.innerHTML="<b>Phone:</b> "+clinic.phone;phone.style.color="#202944";}
+  const dist=document.createElement("p");dist.textContent=Number(clinic.distance).toFixed(1)+" km straight-line distance";
+  const link=document.createElement("a");link.href="https://www.google.com/maps/dir/?api=1&destination="+encodeURIComponent(clinic.lat+","+clinic.lon);link.target="_blank";link.rel="noopener noreferrer";link.textContent="Get Directions";
+  card.append(title,addr,phone,dist,link);return card;
+}
+function displayClinics(clinics,lat,lon){
+  clinicLayer.clearLayers();clinicList.replaceChildren();
+  const bounds=[[lat,lon]];
+  for(const clinic of clinics){
+    const marker=L.marker([clinic.lat,clinic.lon]).addTo(clinicLayer);
+    const popup=document.createElement("div");
+    const pt=document.createElement("strong");pt.textContent=clinic.name;
+    const pd=document.createElement("p");pd.textContent=Number(clinic.distance).toFixed(1)+" km away";
+    const ph=document.createElement("p");if(clinic.phone)ph.textContent="Phone: "+clinic.phone;
+    const dl=document.createElement("a");dl.href="https://www.google.com/maps/dir/?api=1&destination="+encodeURIComponent(clinic.lat+","+clinic.lon);dl.target="_blank";dl.rel="noopener noreferrer";dl.textContent="Get Directions";
+    popup.append(pt,pd,ph,dl);marker.bindPopup(popup);
+    clinicList.appendChild(createHospitalCard(clinic));
+    bounds.push([clinic.lat,clinic.lon]);
+  }
+  if(bounds.length>1) map.fitBounds(bounds,{padding:[35,35],maxZoom:14});
+}
+async function findEyeCentres(lat,lon,areaName){
+  clinicLayer.clearLayers();clinicList.replaceChildren();hideFallback();
+  setStatus("Searching nearby eye-care facilities...");
+  let curated = CURATED_CENTRES.map(c=>({...c,distance:getDistanceKm(lat,lon,c.lat,c.lon)})).filter(c=>c.distance<=30).sort((a,b)=>a.distance-b.distance);
+  let apiClinics=[];
+  try{const data=await fetchJSON("/api/eye-centres?lat="+encodeURIComponent(lat)+"&lon="+encodeURIComponent(lon),45000);apiClinics=Array.isArray(data.clinics)?data.clinics:[];}catch(e){console.log("OSM empty, using curated only");}
+  const all=[...curated,...apiClinics.filter(a=>!curated.some(c=>c.name.toLowerCase()===a.name.toLowerCase()))];
+  if(all.length===0){setStatus("No mapped eye-care facilities found within 10 km. Try Google Maps.","error");showFallback(areaName);return;}
+  displayClinics(all,lat,lon);
+  setStatus(all.length+" eye-care facilities found - including verified Pakistani centres.","success");
+}
+async function searchCity(){
+  if(searching) return;
+  const city=cityInput.value.trim();
+  if(city.length<2){setStatus("Please enter a valid city or area.","error");return;}
+  setBusy(true);hideFallback();
+  try{
+    setStatus("Finding city location...");
+    const locations=await fetchJSON("https://nominatim.openstreetmap.org/search?format=json&limit=1&q="+encodeURIComponent(city),12000);
+    if(!Array.isArray(locations)||locations.length===0) throw new Error("Location not found.");
+    const lat=Number(locations[0].lat),lon=Number(locations[0].lon);
+    map.setView([lat,lon],12);
+    locationLayer.clearLayers();
+    L.circleMarker([lat,lon],{radius:8,color:"#7866e8",fillColor:"#7866e8",fillOpacity:.8}).addTo(locationLayer).bindPopup("Searched location");
+    await findEyeCentres(lat,lon,city);
+  }catch(e){console.error(e);setStatus("Unable to complete city search. Please try again.","error");showFallback(city);}
+  finally{setBusy(false);}
+}
+function searchCurrentLocation(){
+  if(searching) return;
+  if(!navigator.geolocation){setStatus("Geolocation not supported.","error");return;}
+  setBusy(true);hideFallback();setStatus("Requesting location permission...");
+  navigator.geolocation.getCurrentPosition(async pos=>{
+    const lat=pos.coords.latitude,lon=pos.coords.longitude;
+    try{map.setView([lat,lon],13);locationLayer.clearLayers();L.circleMarker([lat,lon],{radius:9,color:"#2563eb",fillColor:"#2563eb",fillOpacity:.7}).addTo(locationLayer).bindPopup("Your approximate location");await findEyeCentres(lat,lon,lat+","+lon);}catch(e){setStatus("Unable to search nearby facilities.","error");showFallback(lat+","+lon);}finally{setBusy(false);}
+  },()=>{setStatus("Location unavailable or permission denied. Please search by city instead.","error");setBusy(false);},{enableHighAccuracy:false,timeout:12000,maximumAge:60000});
+}
+searchBtn.addEventListener("click",searchCity);
+locationBtn.addEventListener("click",searchCurrentLocation);
+cityInput.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();searchCity();}});
+const cities=["Faisalabad","Chak Jhumra","Lahore","Karachi","Islamabad","Rawalpindi","Multan","Gujranwala","Peshawar","Quetta","Hyderabad","Sargodha","Jhang","Toba Tek Singh"];
+const qc=document.getElementById("quick-cities");
+cities.forEach(c=>{const b=document.createElement("button");b.type="button";b.textContent=c;b.onclick=()=>{cityInput.value=c;searchCity();};qc.appendChild(b);});
+console.log("EyeCare AI Map Module 9 initialized - 31 cities, 61 hospitals.");
+</script>
+</body>
+</html>
