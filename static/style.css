@@ -1,0 +1,1409 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+/* =====================================
+   1. GLOBAL THEME
+===================================== */
+
+:root {
+    --navy: #10172b;
+    --navy-light: #1b2540;
+    --purple: #7866e8;
+    --purple-light: #eeeaff;
+    --text: #202944;
+    --muted: #78839a;
+    --border: #e9edf5;
+    --background: #f5f7fc;
+    --white: #ffffff;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: var(--background);
+    color: var(--text);
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+button:focus-visible,
+a:focus-visible,
+textarea:focus-visible {
+    outline: 3px solid #aa9cff;
+    outline-offset: 3px;
+}
+
+.app-layout {
+    min-height: 100vh;
+}
+
+/* =====================================
+   2. SIDEBAR
+===================================== */
+
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: var(--navy);
+    color: white;
+    padding: 26px 17px;
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
+    overflow-y: auto;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 9px 35px;
+}
+
+.brand-icon {
+    width: 43px;
+    height: 43px;
+    background: var(--purple);
+    border-radius: 13px;
+    display: grid;
+    place-items: center;
+    font-size: 21px;
+    flex-shrink: 0;
+}
+
+.brand h2 {
+    font-size: 18px;
+}
+
+.brand small {
+    display: block;
+    color: #aab4cb;
+    font-size: 10px;
+    margin-top: 4px;
+}
+
+.nav-heading {
+    color: #8490aa;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.3px;
+    padding: 0 12px 13px;
+}
+
+.navigation {
+    display: grid;
+    gap: 7px;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    color: #aeb8cd;
+    padding: 13px 12px;
+    border-radius: 9px;
+    text-decoration: none;
+    font-size: 12px;
+    transition: .2s;
+}
+
+.nav-link i {
+    width: 18px;
+    text-align: center;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    background: var(--navy-light);
+    color: white;
+}
+
+.nav-link.active {
+    border-left: 3px solid #9b8cff;
+}
+
+.sidebar-bottom {
+    margin-top: auto;
+    background: var(--navy-light);
+    padding: 17px;
+    border-radius: 12px;
+    color: #c4cbe0;
+    font-size: 11px;
+    line-height: 1.7;
+}
+
+.sidebar-bottom i {
+    color: #a99bff;
+    font-size: 21px;
+    margin-bottom: 8px;
+}
+
+/* =====================================
+   3. MAIN CONTENT
+===================================== */
+
+.main-content {
+    margin-left: 250px;
+    padding: 30px 38px;
+    min-height: 100vh;
+}
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.topbar h1 {
+    font-size: 24px;
+    margin-bottom: 7px;
+}
+
+.topbar p,
+.section-heading p {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.status {
+    background: white;
+    border: 1px solid var(--border);
+    padding: 10px 15px;
+    border-radius: 25px;
+    font-size: 11px;
+    color: #58647d;
+    white-space: nowrap;
+}
+
+.status span {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: #29bf83;
+    border-radius: 50%;
+    margin-right: 6px;
+}
+
+.page {
+    display: none;
+}
+
+.page.active-page {
+    display: block;
+}
+
+/* =====================================
+   4. DASHBOARD
+===================================== */
+
+.welcome-card {
+    min-height: 245px;
+    background: linear-gradient(
+        120deg,
+        #202b50,
+        #6252b9
+    );
+    border-radius: 18px;
+    padding: 35px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    margin-bottom: 35px;
+}
+
+.welcome-card > div:first-child {
+    max-width: 600px;
+}
+
+.eyebrow {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    color: #c8c0ff;
+    font-weight: 700;
+}
+
+.welcome-card h2 {
+    font-size: 27px;
+    line-height: 1.35;
+    margin: 14px 0;
+}
+
+.welcome-card p {
+    font-size: 12px;
+    color: #e1e0f5;
+    line-height: 1.8;
+    margin-bottom: 20px;
+}
+
+.welcome-icon {
+    font-size: 90px;
+    color: #c6bdff;
+    opacity: .8;
+    padding: 20px;
+}
+
+/* =====================================
+   5. BUTTONS
+===================================== */
+
+.primary-btn,
+.secondary-btn {
+    border: none;
+    border-radius: 9px;
+    padding: 12px 18px;
+    font-size: 12px;
+    font-weight: 600;
+    transition: .2s;
+}
+
+.primary-btn {
+    color: white;
+    background: var(--purple);
+}
+
+.primary-btn:hover {
+    background: #6250d3;
+    transform: translateY(-1px);
+}
+
+.primary-btn:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.secondary-btn {
+    color: #59647b;
+    background: #eef0f6;
+}
+
+.secondary-btn:hover {
+    background: #e1e5ef;
+}
+
+.section-heading {
+    margin-bottom: 20px;
+}
+
+.section-heading h2 {
+    font-size: 19px;
+    margin-bottom: 7px;
+}
+
+/* =====================================
+   6. MODULE CARDS
+===================================== */
+
+.module-grid,
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(
+        3,
+        minmax(0, 1fr)
+    );
+    gap: 17px;
+}
+
+.module-card,
+.result-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    padding: 23px;
+}
+
+.module-card {
+    cursor: pointer;
+    transition: .2s;
+}
+
+.module-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(
+        25, 35, 70, .07
+    );
+}
+
+.module-card > i {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 11px;
+    background: var(--purple-light);
+    color: var(--purple);
+    font-size: 18px;
+    margin-bottom: 17px;
+}
+
+.module-card h3,
+.result-card h3 {
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.module-card p,
+.result-card p {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.8;
+}
+
+/* =====================================
+   7. NOTICES
+===================================== */
+
+.notice {
+    background: #fff8e9;
+    color: #8b6b2d;
+    border: 1px solid #f3e4bd;
+    border-radius: 10px;
+    padding: 15px 18px;
+    margin-top: 22px;
+    font-size: 11px;
+    line-height: 1.8;
+}
+
+.notice i {
+    margin-right: 6px;
+}
+
+/* =====================================
+   8. RETINAL SCANNER
+===================================== */
+
+.scanner-box {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    padding: 25px;
+}
+
+.upload-area {
+    min-height: 280px;
+    border: 2px dashed #d6d9e8;
+    border-radius: 13px;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    padding: 25px;
+    transition: .2s;
+}
+
+.upload-area.dragging {
+    border-color: var(--purple);
+    background: #f6f3ff;
+}
+
+#preview-placeholder i {
+    font-size: 42px;
+    color: var(--purple);
+    margin-bottom: 15px;
+}
+
+#preview-placeholder h3 {
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+#preview-placeholder p {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 17px;
+}
+
+#preview-placeholder .file-note {
+    font-size: 10px;
+    margin: 13px 0 0;
+}
+
+#image-preview {
+    display: none;
+    max-width: 100%;
+    max-height: 330px;
+    object-fit: contain;
+    border-radius: 10px;
+}
+
+.scanner-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.message {
+    margin-top: 15px;
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.analysis-result {
+    margin-top: 32px;
+}
+
+.analysis-result[hidden] {
+    display: none !important;
+}
+
+.result-card {
+    margin-bottom: 20px;
+}
+
+.result-card h4 {
+    font-size: 13px;
+    margin: 17px 0 8px;
+}
+
+.result-card ul {
+    padding-left: 21px;
+}
+
+.result-card li {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.9;
+}
+
+.prediction-card {
+    border-left: 4px solid var(--purple);
+}
+
+.prediction-card h2 {
+    color: var(--purple);
+    font-size: 25px;
+    margin: 12px 0;
+}
+
+/* =====================================
+   9. GRAD-CAM RESULTS
+===================================== */
+
+.result-images {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.result-images .result-card {
+    margin-bottom: 0;
+}
+
+.result-images img,
+.standalone-heatmap {
+    display: block;
+    width: 100%;
+    max-height: 350px;
+    object-fit: contain;
+    border-radius: 10px;
+    background: #f4f5f9;
+    margin-top: 12px;
+}
+
+.standalone-heatmap {
+    margin-bottom: 20px;
+}
+
+/* =====================================
+   10. PREDICTION HISTORY
+===================================== */
+
+.heading-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.empty-message {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 25px;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.history-item {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 17px;
+    margin-bottom: 12px;
+}
+
+.history-item h3 {
+    font-size: 14px;
+    margin-bottom: 7px;
+}
+
+.history-item p,
+.history-item small {
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.8;
+}
+
+/* =====================================
+   11. FOOTER
+===================================== */
+
+footer {
+    text-align: center;
+    color: #98a1b3;
+    font-size: 10px;
+    padding: 35px 0 10px;
+}
+
+/* =====================================
+   12. EYE SURGERY GUIDE
+===================================== */
+
+.surgery-hero {
+    background: linear-gradient(
+        120deg,
+        #202b50,
+        #6252b9
+    );
+    border-radius: 18px;
+    padding: 35px;
+    margin-bottom: 35px;
+    color: white;
+}
+
+.surgery-tag {
+    display: inline-block;
+    color: #d0c9ff;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    margin-bottom: 13px;
+}
+
+.surgery-hero h2 {
+    font-size: 27px;
+    margin-bottom: 12px;
+}
+
+.surgery-hero p {
+    color: #e1e0f5;
+    font-size: 12px;
+    line-height: 1.9;
+    max-width: 650px;
+}
+
+/* SURGERY CARDS */
+
+.surgery-grid {
+    display: grid;
+    grid-template-columns: repeat(
+        3,
+        minmax(0, 1fr)
+    );
+    gap: 18px;
+    margin: 20px 0 35px;
+}
+
+.surgery-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 23px;
+    transition: .2s;
+}
+
+.surgery-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(
+        25, 35, 70, .07
+    );
+}
+
+.surgery-icon {
+    width: 46px;
+    height: 46px;
+    display: grid;
+    place-items: center;
+    background: var(--purple-light);
+    color: var(--purple);
+    border-radius: 12px;
+    font-size: 20px;
+    margin-bottom: 17px;
+}
+
+.surgery-card h3 {
+    color: var(--text);
+    font-size: 16px;
+    margin-bottom: 12px;
+}
+
+.surgery-card p {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.8;
+    margin-bottom: 18px;
+}
+
+.surgery-card h4 {
+    color: #39445e;
+    font-size: 12px;
+    margin-bottom: 10px;
+}
+
+.surgery-card ul {
+    padding-left: 19px;
+    margin-bottom: 18px;
+}
+
+.surgery-card li {
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.9;
+}
+
+.surgery-label {
+    display: inline-block;
+    background: var(--purple-light);
+    color: var(--purple);
+    border-radius: 20px;
+    padding: 7px 11px;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+/* AGE GUIDANCE */
+
+.age-guidance-grid {
+    display: grid;
+    grid-template-columns: repeat(
+        3,
+        minmax(0, 1fr)
+    );
+    gap: 18px;
+    margin: 20px 0 35px;
+}
+
+.age-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    padding: 22px;
+    transition: .2s;
+}
+
+.age-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(
+        25, 35, 70, .06
+    );
+}
+
+.age-icon {
+    width: 43px;
+    height: 43px;
+    display: grid;
+    place-items: center;
+    border-radius: 11px;
+    background: #f0edff;
+    color: var(--purple);
+    font-size: 18px;
+    margin-bottom: 14px;
+}
+
+.age-card h3 {
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.age-card p {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.8;
+}
+
+/* SURGERY FORM */
+
+.surgery-checker {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    padding: 27px;
+    margin-bottom: 25px;
+}
+
+.surgery-form-grid {
+    display: grid;
+    grid-template-columns: repeat(
+        2,
+        minmax(0, 1fr)
+    );
+    gap: 22px;
+}
+
+.surgery-field {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.surgery-field label {
+    color: #39445e;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.7;
+}
+
+.surgery-field input,
+.surgery-field select {
+    width: 100%;
+    min-height: 45px;
+    padding: 11px 13px;
+    border: 1px solid #dfe3ed;
+    border-radius: 9px;
+    background: #fff;
+    color: var(--text);
+    font-size: 12px;
+    outline: none;
+    transition: .2s;
+}
+
+.surgery-field input:focus,
+.surgery-field select:focus {
+    border-color: var(--purple);
+    box-shadow: 0 0 0 3px rgba(
+        120, 102, 232, .10
+    );
+}
+
+.surgery-field select {
+    cursor: pointer;
+}
+
+.surgery-buttons {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 25px;
+}
+
+/* SURGERY RESULTS */
+
+.surgery-result {
+    margin-top: 25px;
+    padding: 23px;
+    background: #f1efff;
+    border: 1px solid #ded8ff;
+    border-radius: 13px;
+}
+
+.surgery-result[hidden] {
+    display: none !important;
+}
+
+.surgery-result-icon {
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border-radius: 11px;
+    background: white;
+    color: var(--purple);
+    font-size: 18px;
+    margin-bottom: 14px;
+}
+
+.surgery-result h3 {
+    font-size: 16px;
+    color: #44358f;
+    margin-bottom: 10px;
+}
+
+.surgery-result p {
+    font-size: 12px;
+    line-height: 1.8;
+    color: #5e587d;
+    margin-bottom: 12px;
+}
+
+.surgery-result ul {
+    padding-left: 20px;
+}
+
+.surgery-result li {
+    color: #5e587d;
+    font-size: 12px;
+    line-height: 1.9;
+}
+
+/* SURGERY DISCLAIMER */
+
+.surgery-disclaimer {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    background: #fff8e9;
+    border: 1px solid #f3e4bd;
+    color: #8b6b2d;
+    border-radius: 11px;
+    padding: 18px;
+    margin-top: 23px;
+}
+
+.surgery-disclaimer > i {
+    font-size: 20px;
+    margin-top: 2px;
+}
+
+.surgery-disclaimer strong {
+    font-size: 12px;
+}
+
+.surgery-disclaimer p {
+    font-size: 11px;
+    color: #8b6b2d;
+    line-height: 1.8;
+    margin-top: 7px;
+}
+
+/* =====================================
+   13. GEMINI AI CHATBOT MODULE
+===================================== */
+
+/* CHATBOT MAIN CONTAINER */
+
+.chatbot-shell {
+    width: 100%;
+    max-width: 1000px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 12px 40px rgba(
+        28, 36, 77, 0.06
+    );
+}
+
+/* CHATBOT HEADER */
+
+.chatbot-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 20px 24px;
+    background: linear-gradient(
+        120deg,
+        #202b50,
+        #6252b9
+    );
+    color: white;
+}
+
+.chatbot-identity {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    min-width: 0;
+}
+
+.chatbot-avatar {
+    width: 46px;
+    height: 46px;
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    border-radius: 13px;
+    background: rgba(255, 255, 255, 0.17);
+    color: white;
+    font-size: 21px;
+}
+
+.chatbot-identity h3 {
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.chatbot-identity p {
+    font-size: 11px;
+    color: #e3ddff;
+    line-height: 1.5;
+}
+
+.chatbot-header .secondary-btn {
+    background: rgba(255, 255, 255, 0.14);
+    color: white;
+    border: 1px solid rgba(
+        255, 255, 255, 0.22
+    );
+    white-space: nowrap;
+}
+
+.chatbot-header .secondary-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+/* CHAT CONVERSATION AREA */
+
+.chatbot-messages {
+    height: 440px;
+    min-height: 300px;
+    overflow-y: auto;
+    padding: 25px;
+    background: #f8f9fe;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    scroll-behavior: smooth;
+}
+
+.chatbot-messages::-webkit-scrollbar {
+    width: 7px;
+}
+
+.chatbot-messages::-webkit-scrollbar-track {
+    background: #f0f1f7;
+}
+
+.chatbot-messages::-webkit-scrollbar-thumb {
+    background: #c9c4ee;
+    border-radius: 20px;
+}
+
+/* MESSAGE ROWS */
+
+.chat-message {
+    display: flex;
+    width: 100%;
+    animation: chatFadeIn 0.25s ease;
+}
+
+.bot-message {
+    justify-content: flex-start;
+}
+
+.user-message {
+    justify-content: flex-end;
+}
+
+/* CHAT BUBBLES */
+
+.chat-bubble {
+    max-width: min(80%, 650px);
+    padding: 15px 18px;
+    border-radius: 15px;
+    font-size: 13px;
+    line-height: 1.8;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+}
+
+.bot-message .chat-bubble {
+    background: white;
+    color: #34405b;
+    border: 1px solid #e7e9f3;
+    border-bottom-left-radius: 5px;
+    box-shadow: 0 3px 12px rgba(
+        25, 35, 70, 0.035
+    );
+}
+
+.user-message .chat-bubble {
+    background: var(--purple);
+    color: white;
+    border-bottom-right-radius: 5px;
+    box-shadow: 0 4px 14px rgba(
+        120, 102, 232, 0.15
+    );
+}
+
+/* LOADING INDICATOR */
+
+.chat-loading .chat-bubble {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 49px;
+}
+
+.typing-dot {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--purple);
+    animation: typingBounce 1.2s infinite ease-in-out;
+}
+
+.typing-dot:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing-dot:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes typingBounce {
+    0%, 60%, 100% {
+        transform: translateY(0);
+        opacity: 0.45;
+    }
+
+    30% {
+        transform: translateY(-6px);
+        opacity: 1;
+    }
+}
+
+@keyframes chatFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(7px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* SUGGESTED QUESTIONS */
+
+.chatbot-suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+    padding: 17px 22px;
+    border-top: 1px solid var(--border);
+    background: white;
+}
+
+.chat-suggestion {
+    border: 1px solid #ded9fa;
+    background: #f6f4ff;
+    color: #6653c1;
+    border-radius: 22px;
+    padding: 10px 14px;
+    font-size: 11px;
+    font-weight: 600;
+    transition: .2s;
+}
+
+.chat-suggestion:hover {
+    background: var(--purple);
+    color: white;
+    border-color: var(--purple);
+    transform: translateY(-1px);
+}
+
+.chat-suggestion:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* MESSAGE COMPOSER */
+
+.chatbot-composer {
+    display: flex;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 20px 22px;
+    border-top: 1px solid var(--border);
+    background: white;
+}
+
+.chat-input-label {
+    width: 100%;
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: #39445e;
+}
+
+#chat-input {
+    flex: 1 1 250px;
+    min-width: 0;
+    min-height: 55px;
+    max-height: 150px;
+    resize: vertical;
+    border: 1px solid #dfe3ed;
+    border-radius: 11px;
+    padding: 14px 16px;
+    background: #f9faff;
+    color: var(--text);
+    font-size: 13px;
+    line-height: 1.6;
+    outline: none;
+    transition: .2s;
+}
+
+#chat-input::placeholder {
+    color: #9aa2b3;
+}
+
+#chat-input:focus {
+    border-color: var(--purple);
+    background: white;
+    box-shadow: 0 0 0 3px rgba(
+        120, 102, 232, 0.10
+    );
+}
+
+#chat-input:disabled {
+    background: #f1f2f7;
+    cursor: not-allowed;
+}
+
+#chat-send-btn {
+    min-height: 55px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    padding: 13px 23px;
+    border-radius: 11px;
+    font-size: 13px;
+}
+
+#chat-send-btn i {
+    font-size: 13px;
+}
+
+#chat-send-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+/* CHAT STATUS */
+
+#chat-status {
+    min-height: 18px;
+    margin: 0;
+    padding: 0 22px 16px;
+    background: white;
+    font-size: 11px;
+    line-height: 1.6;
+    color: var(--muted);
+}
+
+#chat-status:empty {
+    display: none;
+}
+
+/* =====================================
+   14. RESPONSIVE DESIGN
+===================================== */
+
+@media (max-width: 1050px) {
+
+    .module-grid,
+    .info-grid,
+    .surgery-grid,
+    .age-guidance-grid {
+        grid-template-columns: repeat(
+            2,
+            minmax(0, 1fr)
+        );
+    }
+
+    .main-content {
+        padding: 26px;
+    }
+
+}
+
+@media (max-width: 750px) {
+
+    .sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+        overflow: visible;
+    }
+
+    .brand {
+        padding-bottom: 18px;
+    }
+
+    .navigation {
+        grid-template-columns: repeat(
+            2,
+            minmax(0, 1fr)
+        );
+    }
+
+    .sidebar-bottom {
+        display: none;
+    }
+
+    .main-content {
+        margin-left: 0;
+        padding: 22px 16px;
+    }
+
+    .welcome-card {
+        padding: 25px;
+    }
+
+    .welcome-card h2 {
+        font-size: 21px;
+    }
+
+    .welcome-icon {
+        display: none;
+    }
+
+    .chatbot-header {
+        padding: 17px;
+    }
+
+    .chatbot-messages {
+        height: 390px;
+        padding: 18px;
+    }
+
+    .chat-bubble {
+        max-width: 88%;
+    }
+
+}
+
+@media (max-width: 520px) {
+
+    .module-grid,
+    .info-grid,
+    .result-images,
+    .surgery-grid,
+    .age-guidance-grid,
+    .surgery-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .topbar {
+        align-items: flex-start;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .topbar h1 {
+        font-size: 19px;
+    }
+
+    .scanner-actions,
+    .heading-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .surgery-hero {
+        padding: 24px;
+    }
+
+    .surgery-hero h2 {
+        font-size: 22px;
+    }
+
+    .surgery-checker {
+        padding: 18px;
+    }
+
+    /* MOBILE CHATBOT */
+
+    .chatbot-shell {
+        border-radius: 13px;
+    }
+
+    .chatbot-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .chatbot-identity h3 {
+        font-size: 14px;
+    }
+
+    .chatbot-avatar {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+    }
+
+    .chatbot-messages {
+        height: 350px;
+        min-height: 280px;
+        padding: 14px;
+        gap: 13px;
+    }
+
+    .chat-bubble {
+        max-width: 94%;
+        padding: 12px 14px;
+        font-size: 12px;
+    }
+
+    .chatbot-suggestions {
+        padding: 13px;
+        gap: 8px;
+    }
+
+    .chat-suggestion {
+        font-size: 10px;
+        padding: 9px 11px;
+    }
+
+    .chatbot-composer {
+        padding: 14px;
+        gap: 10px;
+    }
+
+    #chat-input {
+        flex-basis: 100%;
+        min-height: 65px;
+    }
+
+    #chat-send-btn {
+        width: 100%;
+        min-height: 46px;
+    }
+
+    #chat-status {
+        padding: 0 14px 13px;
+    }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .chat-message,
+    .typing-dot {
+        animation: none;
+    }
+
+    .chatbot-messages {
+        scroll-behavior: auto;
+    }
+
+}
