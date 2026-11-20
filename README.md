@@ -1,6 +1,6 @@
  **EyeCare AI - Eye Disease Classification System**
 
-This project is about detecting eye diseases from eye images using Deep Learning. I made this project as my final year project.
+This project is about detecting eye diseases from eye images using Deep Learning. 
 
 The main idea is very simple. User will upload an eye image and the system will tell which disease it is, like Cataract, Diabetic Retinopathy, Glaucoma or Normal. Along with prediction, it also gives some basic information about eye care.
 
